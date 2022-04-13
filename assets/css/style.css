@@ -1,0 +1,31 @@
+#board {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  height: 420px;
+  width: 420px;
+  margin: auto;
+  background-color: black;
+}
+
+#board .cell {
+  position: relative;
+  height: 48px;
+  width: 48px;
+  margin-top: 2px;
+  background-color: green;
+}
+
+#board .cell .disc {
+  position: absolute;
+  height: 44px;
+  width: 44px;
+  margin: 2px;
+  border-radius: 50%;
+  background-color: black;
+}
+/*# sourceMappingURL=style.css.map */

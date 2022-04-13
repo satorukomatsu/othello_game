@@ -1,0 +1,27 @@
+#board {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    height: 420px;
+    width: 420px;
+    margin: auto;
+    background-color: black;
+
+    .cell {
+        position: relative;
+        height: 48px;
+        width: 48px;
+        margin-top: 2px;
+        background-color: green;
+
+        .disc {
+            position: absolute;
+            height: 44px;
+            width: 44px;
+            margin: 2px;
+            border-radius: 50%;
+            background-color: black;
+        }
+    }
+
+}
