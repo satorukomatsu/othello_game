@@ -28,4 +28,10 @@
   border-radius: 50%;
   background-color: black;
 }
+
+#turn {
+  text-align: center;
+  font-size: large;
+  font-weight: 800;
+}
 /*# sourceMappingURL=style.css.map */
