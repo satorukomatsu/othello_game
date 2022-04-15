@@ -48,8 +48,6 @@ class OthelloBoard {
     }
 }
 
-
-
 //石の動作の定義
 class OthelloDisc {
     constructor() {
@@ -84,10 +82,11 @@ class OthelloDisc {
         return this.discArr[n];
     }
 
-    //石を置いて裏返す
+    //石を置いて裏返し、ターンを切り替える
     moveDisc(pos) {
         const oppositDisc = this.turn === 2? 1 : 2; //相手の石
         console.log('相手の石' + oppositDisc)
+
          //既に石があったら置けない
         if (this.discArr[pos] !== 0) {
             alert('そこには置けません');
@@ -127,11 +126,23 @@ class OthelloDisc {
         }
     }
 
-    //次のターンに切り替える関数
+    //ターンの切り替え
     setNextTurn(turn) {
         this.turn = turn === 2? 1 : 2;
         this.canReverse = false;
         return turn;
+    }
+}
+
+//ゲームの状況を監視する
+class GameStatus {
+    constructor() {
+        document.getElementById('button__cnt').addEventListener('click', e => {
+            onClickBtCnt();
+        })
+        document.getElementById('button__pass').addEventListener('click', e => {
+            onClickBtPass();
+        })
     }
 
     //現在のターンの監視と表示
@@ -144,39 +155,11 @@ class OthelloDisc {
         }
     }
 
-    // //石の集計
-    // countDisc(arr) {
-    //     for (let i = 0; i < arr.lenght; i++) {
-    //         if (arr[i] === 1) {
-    //             this.blackCnt++;
-    //         } else if (arr[i] === 2) {
-    //             this.whiteCnt++;
-    //         }
-    //     }
-    //     if (this.blackCnt === this.whiteCnt) {
-    //         alert(`黒：${this.blackCnt} / 白：${this.whiteCnt}で引き分け！`)
-    //     } else if (this.blackCnt > this.whiteCnt) {
-    //         alert(`黒：${this.blackCnt} / 白：${this.whiteCnt}で黒の勝ち！`)
-    //     } else {
-    //         alert(`黒：${this.blackCnt} / 白：${this.whiteCnt}で白の勝ち！`)
-    //     }
-    // }
-}
-
-class GameStatus {
-    constructor() {
-        document.getElementById('buttonCnt').addEventListener('click', e => {
-            onClickButton();
-        })
-    }
-
-    
-
-    //石の数を集計して表示する
+    //石の数を集計して、石の数と勝敗を表示する
     countDisc(arr) {
         let blackCnt = 0;
         let whiteCnt = 0;
-        for (let i = 0; i < arr.lenght; i++) {
+        for (let i = 0; i < 91; i++) {
             if (arr[i] === 1) {
                 blackCnt++;
             } else if (arr[i] === 2) {
@@ -199,13 +182,25 @@ const gameStatus   = new GameStatus();
 
 othelloBoard.currentDisc(othelloDisc)
 
+//ボード上のクリックイベント
 function onClickBoard(pos) {
-    othelloDisc.moveDisc(pos);                  //石が置けるかの判定と裏返し処理
-    othelloBoard.currentDisc(othelloDisc);      //石の表示
-    othelloDisc.currentTurn(othelloDisc.turn);  //現在のターンの監視
-    
+    othelloDisc.moveDisc(pos);                 //石が置けるかの判定と裏返し処理
+    othelloBoard.currentDisc(othelloDisc);     //石の表示
+    gameStatus.currentTurn(othelloDisc.turn);  //現在のターンの監視   
 }
 
-function onClickButton() {
+//集計ボタンのクリックイベント
+function onClickBtCnt() {
     gameStatus.countDisc(othelloDisc.discArr);
+}
+
+//todo:パスボタンのクリックイベント
+function onClickBtPass() {
+    othelloDisc.setNextTurn(othelloDisc.turn);
+    gameStatus.currentTurn(othelloDisc.turn)
+}
+
+//todo:リセットボタンのクリックイベント
+function onClickBtReset() {
+
 }
