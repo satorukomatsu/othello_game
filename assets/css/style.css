@@ -31,7 +31,17 @@
 
 #turn {
   text-align: center;
-  font-size: large;
+  font-size: larger;
   font-weight: 800;
+}
+
+.button {
+  text-align: center;
+}
+
+.button button {
+  height: 2em;
+  width: 10em;
+  font-size: large;
 }
 /*# sourceMappingURL=style.css.map */
