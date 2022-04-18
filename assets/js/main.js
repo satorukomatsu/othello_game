@@ -26,7 +26,7 @@ class OthelloBoard {
             //クリックしたら反応するイベント
             el.addEventListener('click', e => {
                 onClickBoard(`${i}`);
-                console.log(`cell #${i}`)
+                // console.log(`cell #${i}`)
             })
         }
 
@@ -52,7 +52,6 @@ class OthelloBoard {
 class OthelloDisc {
     constructor() {
         this.discArr = new Array(91);
-        this.vector = [-10, -9, -8, -1, 1, 8, 9, 10]  //打ちたいマスの隣を判定するための数字
         this.turn = 1;
         this.canReverse = false;
         this.blackCnt = 0;
@@ -77,42 +76,43 @@ class OthelloDisc {
         this.discArr[49] = 1;
     }
 
-    //配列の数字を取得するだけ
+    //石の配置を決める配列の数字を取得するだけ
     getNum(n) {
         return this.discArr[n];
     }
 
     //石を置いて裏返し、ターンを切り替える
     moveDisc(pos) {
-        const oppositDisc = this.turn === 2? 1 : 2; //相手の石
-        console.log('相手の石' + oppositDisc)
+        const vector = [-10, -9, -8, -1, 1, 8, 9, 10]  //打ちたいマスの隣を判定するための数字
 
-         //既に石があったら置けない
+        //既に石があったら置けない
         if (this.discArr[pos] !== 0) {
             alert('そこには置けません');
             return;
         }
-
+        
         //置きたいマスの周りの全８方向について裏返せるか調べていく 
-        for (let i = 0; i < this.vector.length; i++) {
-            const vec = this.vector[i];
-            let currentPos = parseInt(pos);
-            let n = currentPos + vec;
+        for (let i = 0; i < vector.length; i++) {
+            const oppositDisc = this.turn === 2? 1 : 2; //相手の石
+            // console.log('相手の石' + oppositDisc)
+            const vec = vector[i];
+            const currentPos = parseInt(pos);
+            let num = currentPos + vec;
             let flipp = 0;
-            if (this.discArr[n] === this.turn || this.discArr[n] === 0) {
+            if (this.discArr[num] === this.turn || this.discArr[num] === 0) {
                 continue;
             }
-            while (this.discArr[n] === oppositDisc) {
-                n += vec;
+            while (this.discArr[num] === oppositDisc) {
+                num += vec;
                 flipp++;
-                console.log('flipp #' + flipp)
+                // console.log('flipp #' + flipp)
             }
-            if (this.discArr[n] === this.turn) {
-                console.log('実際の数字' + this.discArr[n])
-                console.log('myturn' + this.turn)
+            if (this.discArr[num] === this.turn) {
+                // console.log('実際の数字' + this.discArr[num])
+                // console.log('myturn' + this.turn)
                 for (let i = 0; i < flipp; i++) {
-                    this.discArr[n - vec] = this.turn;
-                    n -= vec;
+                    this.discArr[num - vec] = this.turn;
+                    num -= vec;
                 }
                 this.discArr[pos] = this.turn;
                 this.canReverse = true;
@@ -122,15 +122,52 @@ class OthelloDisc {
         //裏返せる石が見つかったらターンを切り替える
         if (this.canReverse) {
             this.setNextTurn(this.turn);
-            console.log('nextTurn' + this.turn);
         }
     }
 
-    //ターンの切り替え
+    //ターンの切り替えとパスしなければならないか
     setNextTurn(turn) {
         this.turn = turn === 2? 1 : 2;
+        if (!this.canMoveDisc(this.turn)) {
+            this.turn = this.turn === 2? 1 : 2;
+            alert('石を置ける場所がありません。相手の番に移ります。');
+            if (!this.canMoveDisc(this.turn)) {  //パスが２回続いたら終局判定
+                this.turn = 0;
+                alert('終局！！')
+            }
+        }        
         this.canReverse = false;
         return turn;
+    }
+
+    //打てるマスが存在するかを判定
+    canMoveDisc(turn) {
+        for (let i = 0; i < 91; i++) {
+            const pos = this.discArr[i];
+            const vector = [-10, -9, -8, -1, 1, 8, 9, 10]  //打ちたいマスの隣を判定するための数字
+
+            //全ての空きマスについて打てるか調べていきたい
+            if(pos === 0) {
+                for (let j = 0; j < vector.length; j++) {
+                    const oppositDisc = turn === 2? 1 : 2; //相手の石
+                    const vec = vector[j];
+                    let num = i + vec; //隣のマスの番号
+                    
+                    if (this.discArr[num] === turn || this.discArr[num] === 0) {
+                        continue;
+                    }
+                    while (this.discArr[num] === oppositDisc) {
+                        num += vec;   
+                    }
+                    if (this.discArr[num] === turn) {
+                        return true;
+                    }
+                } 
+            }
+        }
+        
+        //全ての空きマスについて打てないならターンの切り替え
+        return false;
     }
 }
 
@@ -149,9 +186,11 @@ class GameStatus {
     currentTurn(turn) {
         const t = document.getElementById('turn');
         if (turn === 1) {
-            t.innerText = '黒の番です'
-        } else {
-            t.innerText = '白の番です'
+            t.innerText = '黒の番です';
+        } else if (turn === 2) {
+            t.innerText = '白の番です';
+        } else if (turn === 0) {
+            t.innerText = '終局です！';
         }
     }
 
@@ -180,13 +219,13 @@ const othelloBoard = new OthelloBoard('board');
 const othelloDisc  = new OthelloDisc();
 const gameStatus   = new GameStatus();
 
-othelloBoard.currentDisc(othelloDisc)
+othelloBoard.currentDisc(othelloDisc);
 
 //ボード上のクリックイベント
 function onClickBoard(pos) {
     othelloDisc.moveDisc(pos);                 //石が置けるかの判定と裏返し処理
     othelloBoard.currentDisc(othelloDisc);     //石の表示
-    gameStatus.currentTurn(othelloDisc.turn);  //現在のターンの監視   
+    gameStatus.currentTurn(othelloDisc.turn);  //現在のターンの監視
 }
 
 //集計ボタンのクリックイベント
@@ -194,10 +233,10 @@ function onClickBtCnt() {
     gameStatus.countDisc(othelloDisc.discArr);
 }
 
-//todo:パスボタンのクリックイベント
+//パスボタンのクリックイベント
 function onClickBtPass() {
     othelloDisc.setNextTurn(othelloDisc.turn);
-    gameStatus.currentTurn(othelloDisc.turn)
+    gameStatus.currentTurn(othelloDisc.turn);
 }
 
 //todo:リセットボタンのクリックイベント
