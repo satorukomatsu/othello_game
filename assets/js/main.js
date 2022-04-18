@@ -54,8 +54,6 @@ class OthelloDisc {
         this.discArr = new Array(91);
         this.turn = 1;
         this.canReverse = false;
-        this.blackCnt = 0;
-        this.whiteCnt = 0;
 
         //石の表示
         //非表示 　　　: 0
@@ -169,16 +167,41 @@ class OthelloDisc {
         //全ての空きマスについて打てないならターンの切り替え
         return false;
     }
+
+    //石の位置を全て初期値に戻す
+    resetDisc() {
+        for (let i = 0; i < 91; i++) {
+            if (Math.floor(i / 9) === 0 || Math.floor(i / 9) === 9 || i % 9 === 0) {
+                this.discArr[i] = 8;
+            } else {
+                this.discArr[i] = 0;
+            }
+        }
+    
+        this.discArr[40] = 2;
+        this.discArr[50] = 2;
+        this.discArr[41] = 1;
+        this.discArr[49] = 1;
+
+        this.turn = 1;
+    }
 }
 
 //ゲームの状況を監視する
 class GameStatus {
     constructor() {
-        document.getElementById('button__cnt').addEventListener('click', e => {
+        const cnt = document.getElementById('button__cnt');
+        const pass = document.getElementById('button__pass');
+        const reset = document.getElementById('button__reset');
+
+        cnt.addEventListener('click', e => {
             onClickBtCnt();
         })
-        document.getElementById('button__pass').addEventListener('click', e => {
+        pass.addEventListener('click', e => {
             onClickBtPass();
+        })
+        reset.addEventListener('click', e => {
+            onClickBtReset();
         })
     }
 
@@ -239,7 +262,9 @@ function onClickBtPass() {
     gameStatus.currentTurn(othelloDisc.turn);
 }
 
-//todo:リセットボタンのクリックイベント
+//リセットボタンのクリックイベント
 function onClickBtReset() {
-
+    othelloDisc.resetDisc();
+    othelloBoard.currentDisc(othelloDisc);
+    gameStatus.currentTurn(othelloDisc.turn);
 }
