@@ -144,7 +144,7 @@ class OthelloDisc {
         this.turn = turn === 2? 1 : 2;
         if (!this.canMoveDisc(this.turn)) {
             this.turn = this.turn === 2? 1 : 2;
-            alert('石を置ける場所がありません。相手の番に移ります。');
+            alert('相手の石を置ける場所がありません。もう一度自分の番です。');
             if (!this.canMoveDisc(this.turn)) {  //パスが２回続いたら終局判定
                 this.turn = 0;
                 alert('終局！！')
@@ -275,6 +275,7 @@ function onClickBtCnt() {
 //パスボタンのクリックイベント
 function onClickBtPass() {
     othelloDisc.setNextTurn(othelloDisc.turn);
+    alert('パスです');
     gameStatus.currentTurn(othelloDisc.turn);
 }
 
