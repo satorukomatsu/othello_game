@@ -19,8 +19,8 @@
 
 //石の表示/非表示とターン切り替えに使う数字
 const DISC_HIDDEN = 0;
-const BLACK       = 1;
-const WHITE       = 2;
+const DISC_BLACK  = 1;
+const DISC_WHITE  = 2;
 const OUTSIDE     = 8;
 const GAME_END    = 0;
 
@@ -106,12 +106,12 @@ class OthelloDisc {
             }
         }
 
-        this.discArr[40] = WHITE;
-        this.discArr[50] = WHITE;
-        this.discArr[41] = BLACK;
-        this.discArr[49] = BLACK;
+        this.discArr[40] = DISC_WHITE;
+        this.discArr[50] = DISC_WHITE;
+        this.discArr[41] = DISC_BLACK;
+        this.discArr[49] = DISC_BLACK;
 
-        this.turn = BLACK;
+        this.turn = DISC_BLACK;
     }
 
     //石の配置を決める配列の数字を取得するだけ
@@ -130,7 +130,7 @@ class OthelloDisc {
         
         //置きたいマスの周りの全８方向について裏返せるか調べていく 
         for (let i = 0; i < vector.length; i++) {
-            const oppositDisc = this.turn === WHITE? BLACK : WHITE; //相手の石
+            const oppositDisc = this.turn === DISC_WHITE? DISC_BLACK : DISC_WHITE; //相手の石
             const vec = vector[i];
             const currentPos = parseInt(pos);
             let num = currentPos + vec;
@@ -160,9 +160,9 @@ class OthelloDisc {
 
     //ターンの切り替えとパスしなければならないか
     setNextTurn(turn) {
-        this.turn = turn === WHITE? BLACK : WHITE;
+        this.turn = turn === DISC_WHITE? DISC_BLACK : DISC_WHITE;
         if (!this.canMoveDisc(this.turn)) {
-            this.turn = this.turn === WHITE? BLACK : WHITE;
+            this.turn = this.turn === DISC_WHITE? DISC_BLACK : DISC_WHITE;
             alert('相手の石を置ける場所がありません。もう一度自分の番です。');
             if (!this.canMoveDisc(this.turn)) {  //パスが２回続いたら終局判定
                 this.turn = GAME_END;
@@ -182,7 +182,7 @@ class OthelloDisc {
             //全ての空きマスについて打てるか調べていきたい
             if(pos === 0) {
                 for (let j = 0; j < vector.length; j++) {
-                    const oppositDisc = turn === WHITE? BLACK : WHITE; //相手の石
+                    const oppositDisc = turn === DISC_WHITE? DISC_BLACK : DISC_WHITE; //相手の石
                     const vec = vector[j];
                     let num = i + vec; //隣のマスの番号
                     
@@ -225,9 +225,9 @@ class GameStatus {
     //現在のターンの監視と表示
     currentTurn(turn) {
         const t = document.getElementById('turn');
-        if (turn === BLACK) {
+        if (turn === DISC_BLACK) {
             t.innerText = '黒の番です';
-        } else if (turn === WHITE) {
+        } else if (turn === DISC_WHITE) {
             t.innerText = '白の番です';
         } else if (turn === GAME_END) {
             t.innerText = '終局です！';
@@ -239,9 +239,9 @@ class GameStatus {
         let blackCnt = 0;
         let whiteCnt = 0;
         for (let i = 0; i < arr.length; i++) {
-            if (arr[i] === BLACK) {
+            if (arr[i] === DISC_BLACK) {
                 blackCnt++;
-            } else if (arr[i] === WHITE) {
+            } else if (arr[i] === DISC_WHITE) {
                 whiteCnt++;
             }
         }
